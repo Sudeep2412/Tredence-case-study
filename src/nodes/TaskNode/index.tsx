@@ -7,12 +7,18 @@ import { useNodeValidation } from '../../hooks/useNodeValidation';
 
 export const TaskNodeSchema = z.object({
   label: z.string().min(1, 'Label is required'),
+  description: z.string().optional(),
   assignee: z.string().min(1, 'Assignee is required'),
+  dueDate: z.string().optional(),
+  customFields: z.string().optional(),
 });
 
 export const TaskNodeData = {
   label: 'Task',
+  description: '',
   assignee: '',
+  dueDate: '',
+  customFields: '',
   type: 'task',
 };
 
@@ -65,12 +71,19 @@ export const TaskNodeProperties = ({ control, errors }: any) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-1">Label</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
         <input 
           {...control.register('label')} 
           className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
         />
         {errors.label && <span className="text-xs text-red-400">{errors.label.message}</span>}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
+        <textarea 
+          {...control.register('description')} 
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none h-16"
+        />
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-400 mb-1">Assignee</label>
@@ -79,6 +92,22 @@ export const TaskNodeProperties = ({ control, errors }: any) => {
           className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
         />
         {errors.assignee && <span className="text-xs text-red-400">{errors.assignee.message}</span>}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Due Date</label>
+        <input 
+          type="date"
+          {...control.register('dueDate')} 
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Custom Fields (JSON)</label>
+        <textarea 
+          {...control.register('customFields')} 
+          placeholder='{"priority": "high"}'
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none h-16"
+        />
       </div>
     </div>
   );

@@ -22,6 +22,21 @@ export const handlers = [
       return HttpResponse.json({ error: 'No nodes provided' }, { status: 400 });
     }
 
+    // Handle Disconnected / Orphaned Nodes
+    const connectedNodeIds = new Set<string>();
+    edges.forEach((edge: any) => {
+      connectedNodeIds.add(edge.source);
+      connectedNodeIds.add(edge.target);
+    });
+
+    const hasOrphans = nodes.some((n: any) => 
+      nodes.length > 1 && !connectedNodeIds.has(n.id)
+    );
+
+    if (hasOrphans) {
+      return HttpResponse.json({ error: 'Validation Error: Orphaned nodes detected. All nodes must be connected.' }, { status: 400 });
+    }
+
     // Build execution steps
     const steps: any[] = [];
     

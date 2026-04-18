@@ -48,24 +48,37 @@ export const PropertiesPanel = () => {
 };
 
 const NodeForm = ({ node, nodeDef, updateNodeData }: { node: any, nodeDef: any, updateNodeData: any }) => {
+  const removeNode = useWorkflowStore((state) => state.removeNode);
+
   const { control, handleSubmit, formState: { errors }, watch } = useForm({
     resolver: zodResolver(nodeDef.schema),
     defaultValues: node.data,
   });
 
   // Watch for changes and update node data in real-time
-  // For a production app, we might want to debounce this or use an explicit "Save" button
   useEffect(() => {
     const subscription = watch((value) => {
-      // Small validation check could be done here, but we just sync for now
       updateNodeData(node.id, value);
     });
     return () => subscription.unsubscribe();
   }, [watch, updateNodeData, node.id]);
 
   return (
-    <form className="space-y-4">
-      <nodeDef.propertiesComponent control={control} errors={errors} watch={watch} />
-    </form>
+    <div className="flex flex-col h-full justify-between pb-8">
+      <form className="space-y-4">
+        <nodeDef.propertiesComponent control={control} errors={errors} watch={watch} />
+      </form>
+      <div className="mt-8 pt-4 border-t border-white/10">
+        <button 
+          onClick={(e) => {
+            e.preventDefault();
+            removeNode(node.id);
+          }}
+          className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-500 py-2 rounded-md transition-colors text-sm font-medium border border-red-500/20"
+        >
+          Delete Node
+        </button>
+      </div>
+    </div>
   );
 };

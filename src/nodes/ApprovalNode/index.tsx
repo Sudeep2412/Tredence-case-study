@@ -6,13 +6,15 @@ import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
 export const ApprovalNodeSchema = z.object({
-  label: z.string().min(1, 'Label is required'),
+  label: z.string().min(1, 'Title is required'),
   approverRole: z.string().min(1, 'Approver Role is required'),
+  autoApproveThreshold: z.number().optional(),
 });
 
 export const ApprovalNodeData = {
   label: 'Approval',
   approverRole: '',
+  autoApproveThreshold: 0,
   type: 'approval',
 };
 
@@ -65,7 +67,7 @@ export const ApprovalNodeProperties = ({ control, errors }: any) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-1">Label</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
         <input 
           {...control.register('label')} 
           className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
@@ -84,6 +86,14 @@ export const ApprovalNodeProperties = ({ control, errors }: any) => {
           <option value="Director">Director</option>
         </select>
         {errors.approverRole && <span className="text-xs text-red-400">{errors.approverRole.message}</span>}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Auto-Approve Threshold ($ or Value)</label>
+        <input 
+          type="number"
+          {...control.register('autoApproveThreshold', { valueAsNumber: true })} 
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
+        />
       </div>
     </div>
   );

@@ -7,10 +7,12 @@ import { useNodeValidation } from '../../hooks/useNodeValidation';
 
 export const StartNodeSchema = z.object({
   label: z.string().min(1, 'Label is required'),
+  metadata: z.string().optional(),
 });
 
 export const StartNodeData = {
   label: 'Start',
+  metadata: '',
   type: 'start',
 };
 
@@ -41,10 +43,18 @@ export const StartNodeProperties = ({ control }: any) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-1">Label</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
         <input 
           {...control.register('label')} 
           className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Metadata (JSON format)</label>
+        <textarea 
+          {...control.register('metadata')} 
+          placeholder='{"key": "value"}'
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none h-24"
         />
       </div>
     </div>

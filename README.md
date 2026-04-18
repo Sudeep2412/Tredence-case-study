@@ -3,7 +3,10 @@
 ## The 30-Second Pitch
 The HR Workflow Designer is a highly modular, extensible, and type-safe visual editor for AI-agentic workflows. Built to simulate complex enterprise HR processes (like automated onboarding and approvals), it leverages React Flow for a seamless canvas experience and Zustand for ultra-fast, zero-boilerplate state management (including full undo/redo capabilities).
 
-The most significant architectural bet in this application is the **Node Registry Pattern**. Instead of tightly coupling React Flow components, forms, and validation logic, everything is decentralized into a single registry (`src/nodes/registry.ts`). Adding a new node type requires touching exactly one file system location. This inherently answers the requirement for a highly scalable, production-ready design.
+**Key Highlights for the Tredence AI Agentic Platform:**
+* **AI Co-pilot Integration:** Includes a context-aware mock AI hook (`useAISuggestion`) that analyzes the canvas in real-time and provides intelligent suggestions for next steps when nodes are dropped, demonstrating an understanding of Agentic UX.
+* **Tredence Enterprise Aesthetics:** Fully adheres to a premium dark-mode theme (`#151721` base) with vibrant orange accents, glassmorphism panels, and dynamic data visualization components that match the required high-end design language.
+* **The Node Registry Pattern:** The most significant architectural bet. Instead of tightly coupling React Flow components, forms, and validation logic, everything is decentralized into a single registry (`src/nodes/registry.ts`). Adding a new node type requires touching exactly one file system location. This inherently answers the requirement for a highly scalable, production-ready design.
 
 ## How to Run
 1. Install dependencies:

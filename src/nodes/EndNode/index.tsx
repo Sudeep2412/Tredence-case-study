@@ -6,11 +6,15 @@ import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
 export const EndNodeSchema = z.object({
-  label: z.string().min(1, 'Label is required'),
+  label: z.string().min(1, 'Title is required'),
+  endMessage: z.string().optional(),
+  summaryFlag: z.boolean().optional(),
 });
 
 export const EndNodeData = {
   label: 'End',
+  endMessage: '',
+  summaryFlag: false,
   type: 'end',
 };
 
@@ -40,12 +44,27 @@ export const EndNodeProperties = ({ control, errors }: any) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-400 mb-1">Label</label>
+        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
         <input 
           {...control.register('label')} 
           className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none"
         />
         {errors.label && <span className="text-xs text-red-400">{errors.label.message}</span>}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-400 mb-1">End Message</label>
+        <textarea 
+          {...control.register('endMessage')} 
+          className="w-full bg-black/50 border border-white/10 rounded-md p-2 text-white focus:border-accent focus:outline-none h-16"
+        />
+      </div>
+      <div className="flex items-center gap-2">
+        <input 
+          type="checkbox"
+          {...control.register('summaryFlag')} 
+          className="w-4 h-4 rounded border-white/10 bg-black/50 text-accent focus:ring-accent"
+        />
+        <label className="text-sm font-medium text-gray-400">Generate Summary on End</label>
       </div>
     </div>
   );

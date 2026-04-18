@@ -27,7 +27,9 @@ export type WorkflowState = {
   setEdges: (edges: Edge[]) => void;
   addNode: (node: AppNode) => void;
   updateNodeData: (nodeId: string, data: any) => void;
+  removeNode: (nodeId: string) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+  setWorkflow: (nodes: AppNode[], edges: Edge[]) => void;
 };
 
 export const useWorkflowStore = create<WorkflowState>()(
@@ -70,8 +72,18 @@ export const useWorkflowStore = create<WorkflowState>()(
           }),
         });
       },
+      removeNode: (nodeId: string) => {
+        set({
+          nodes: get().nodes.filter((node) => node.id !== nodeId),
+          edges: get().edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
+          selectedNodeId: get().selectedNodeId === nodeId ? null : get().selectedNodeId,
+        });
+      },
       setSelectedNodeId: (nodeId: string | null) => {
         set({ selectedNodeId: nodeId });
+      },
+      setWorkflow: (nodes: AppNode[], edges: Edge[]) => {
+        set({ nodes, edges, selectedNodeId: null });
       },
     }),
     {
