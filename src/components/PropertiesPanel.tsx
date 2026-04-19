@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useWorkflowStore } from '../store/workflowStore';
-import { NodeRegistry, NodeType } from '../nodes/registry';
+import { useWorkflowStore, AppNode } from '../store/workflowStore';
+import { NodeRegistry, NodeType, NodeDefinition } from '../nodes/registry';
 import { X } from 'lucide-react';
+import { useDebounce } from 'use-debounce';
 
 export const PropertiesPanel = () => {
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
@@ -47,7 +48,7 @@ export const PropertiesPanel = () => {
   );
 };
 
-const NodeForm = ({ node, nodeDef, updateNodeData }: { node: any, nodeDef: any, updateNodeData: any }) => {
+const NodeForm = ({ node, nodeDef, updateNodeData }: { node: AppNode, nodeDef: NodeDefinition, updateNodeData: (nodeId: string, data: Record<string, unknown>) => void }) => {
   const removeNode = useWorkflowStore((state) => state.removeNode);
 
   const { control, handleSubmit, formState: { errors }, watch } = useForm({
@@ -55,13 +56,13 @@ const NodeForm = ({ node, nodeDef, updateNodeData }: { node: any, nodeDef: any, 
     defaultValues: node.data,
   });
 
+  const formValues = watch();
+  const [debouncedValues] = useDebounce(formValues, 300);
+
   // Watch for changes and update node data in real-time
   useEffect(() => {
-    const subscription = watch((value) => {
-      updateNodeData(node.id, value);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, updateNodeData, node.id]);
+    updateNodeData(node.id, debouncedValues);
+  }, [debouncedValues, updateNodeData, node.id]);
 
   return (
     <div className="flex flex-col h-full justify-between pb-8">

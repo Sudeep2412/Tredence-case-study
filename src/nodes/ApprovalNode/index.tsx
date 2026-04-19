@@ -1,7 +1,8 @@
-import React from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { memo } from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 import { Stamp } from 'lucide-react';
 import { z } from 'zod';
+import { Control, FieldErrors } from 'react-hook-form';
 import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
@@ -18,7 +19,7 @@ export const ApprovalNodeData = {
   type: 'approval',
 };
 
-export const ApprovalNodeComponent = ({ id, data, selected }: any) => {
+export const ApprovalNodeComponent = memo(({ id, data, selected }: NodeProps) => {
   const { isValid, errors } = useNodeValidation(id, ApprovalNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
@@ -61,9 +62,9 @@ export const ApprovalNodeComponent = ({ id, data, selected }: any) => {
       <Handle type="source" position={Position.Right} id="rejected" className="w-3 h-3 bg-red-500 top-[calc(100%-24px)] right-4 translate-x-1/2 rounded-sm" />
     </div>
   );
-};
+});
 
-export const ApprovalNodeProperties = ({ control, errors }: any) => {
+export const ApprovalNodeProperties = ({ control, errors }: { control: Control<any>, errors: FieldErrors<any> }) => {
   return (
     <div className="space-y-4">
       <div>

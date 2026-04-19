@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { useEffect, useState, memo } from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 import { Bot } from 'lucide-react';
 import { z } from 'zod';
+import { Control, FieldErrors, UseFormWatch } from 'react-hook-form';
 import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
@@ -18,7 +19,7 @@ export const AutomatedNodeData = {
   type: 'automated',
 };
 
-export const AutomatedNodeComponent = ({ id, data, selected }: any) => {
+export const AutomatedNodeComponent = memo(({ id, data, selected }: NodeProps) => {
   const { isValid, errors } = useNodeValidation(id, AutomatedNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
@@ -61,9 +62,9 @@ export const AutomatedNodeComponent = ({ id, data, selected }: any) => {
       <Handle type="source" position={Position.Right} className="w-3 h-3 bg-orange-500" />
     </div>
   );
-};
+});
 
-export const AutomatedNodeProperties = ({ control, errors, watch }: any) => {
+export const AutomatedNodeProperties = ({ control, errors, watch }: { control: Control<any>, errors: FieldErrors<any>, watch: UseFormWatch<any> }) => {
   const [automations, setAutomations] = useState<any[]>([]);
   const actionId = watch('actionId');
 

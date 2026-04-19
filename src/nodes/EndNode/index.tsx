@@ -1,7 +1,8 @@
-import React from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { memo } from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 import { Square } from 'lucide-react';
 import { z } from 'zod';
+import { Control, FieldErrors } from 'react-hook-form';
 import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
@@ -18,7 +19,7 @@ export const EndNodeData = {
   type: 'end',
 };
 
-export const EndNodeComponent = ({ id, data, selected }: any) => {
+export const EndNodeComponent = memo(({ id, data, selected }: NodeProps) => {
   const { isValid, errors } = useNodeValidation(id, EndNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
@@ -38,9 +39,9 @@ export const EndNodeComponent = ({ id, data, selected }: any) => {
       </div>
     </div>
   );
-};
+});
 
-export const EndNodeProperties = ({ control, errors }: any) => {
+export const EndNodeProperties = ({ control, errors }: { control: Control<any>, errors: FieldErrors<any> }) => {
   return (
     <div className="space-y-4">
       <div>

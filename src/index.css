@@ -30,4 +30,22 @@
   .react-flow__handle:hover {
     @apply scale-150;
   }
+
+  /* React Flow Overrides for Dark Mode */
+  .react-flow__controls {
+    @apply !shadow-xl !border !border-white/10 !rounded-md !overflow-hidden;
+  }
+  .react-flow__controls-button {
+    @apply !bg-[#1a1d27] !border-b !border-white/5 !text-gray-400 !fill-gray-400 hover:!bg-white/10 hover:!text-white hover:!fill-white !transition-colors;
+  }
+  .react-flow__controls-button:last-child {
+    @apply !border-b-0;
+  }
+  
+  .react-flow__minimap {
+    @apply !bg-[#1a1d27] !border !border-white/10 !rounded-xl !overflow-hidden !shadow-xl;
+  }
+  .react-flow__minimap-mask {
+    @apply !fill-[#0f1117]/80;
+  }
 }

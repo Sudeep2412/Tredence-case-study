@@ -1,7 +1,8 @@
-import React from 'react';
-import { Handle, Position } from 'reactflow';
+import React, { memo } from 'react';
+import { Handle, Position, NodeProps } from 'reactflow';
 import { Play } from 'lucide-react';
 import { z } from 'zod';
+import { Control } from 'react-hook-form';
 import { NodeBadge } from '../../components/NodeBadge';
 import { useNodeValidation } from '../../hooks/useNodeValidation';
 
@@ -16,7 +17,7 @@ export const StartNodeData = {
   type: 'start',
 };
 
-export const StartNodeComponent = ({ id, data, selected }: any) => {
+export const StartNodeComponent = memo(({ id, data, selected }: NodeProps) => {
   const { isValid, errors } = useNodeValidation(id, StartNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
@@ -37,9 +38,9 @@ export const StartNodeComponent = ({ id, data, selected }: any) => {
       <Handle type="source" position={Position.Right} className="w-3 h-3 bg-green-500" />
     </div>
   );
-};
+});
 
-export const StartNodeProperties = ({ control }: any) => {
+export const StartNodeProperties = ({ control }: { control: Control<any> }) => {
   return (
     <div className="space-y-4">
       <div>

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Play, Undo2, Redo2, Download, Upload } from 'lucide-react';
+import { Play, Undo2, Redo2, Download, Upload, LayoutGrid } from 'lucide-react';
 import { useRef } from 'react';
 import { useWorkflowStore } from '../store/workflowStore';
+import { getLayoutedElements } from '../utils/layout';
 
 export const Header = ({ onSimulate }: { onSimulate: () => void }) => {
   const { undo, redo } = useWorkflowStore.temporal.getState();
@@ -20,6 +21,12 @@ export const Header = ({ onSimulate }: { onSimulate: () => void }) => {
     a.download = 'workflow.json';
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const handleAutoLayout = () => {
+    const state = useWorkflowStore.getState();
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(state.nodes, state.edges);
+    state.setWorkflow(layoutedNodes, layoutedEdges);
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +96,14 @@ export const Header = ({ onSimulate }: { onSimulate: () => void }) => {
             title="Redo"
           >
             <Redo2 size={18} />
+          </button>
+          <div className="w-px h-5 bg-white/10 mx-1"></div>
+          <button 
+            onClick={handleAutoLayout}
+            className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded text-sm text-gray-300 transition-colors"
+            title="Auto-Layout"
+          >
+            <LayoutGrid size={16} /> Auto Layout
           </button>
         </div>
 

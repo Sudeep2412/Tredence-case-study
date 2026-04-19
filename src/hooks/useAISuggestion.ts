@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { useRef } from 'react';
+import { Node, Edge } from 'reactflow';
 
 interface AISuggestionState {
   suggestion: string | null;
@@ -12,8 +14,13 @@ export const useAISuggestionStore = create<AISuggestionState>((set) => ({
 
 export const useAISuggestion = () => {
   const setSuggestion = useAISuggestionStore((state) => state.setSuggestion);
+  const timeoutRefs = useRef<{ think?: NodeJS.Timeout; clear?: NodeJS.Timeout }>({});
 
-  const getSuggestion = (newNode: any, allNodes: any[], allEdges: any[]) => {
+  const getSuggestion = (newNode: Node, allNodes: Node[], allEdges: Edge[]) => {
+    // Clear existing timeouts to prevent race conditions
+    if (timeoutRefs.current.think) clearTimeout(timeoutRefs.current.think);
+    if (timeoutRefs.current.clear) clearTimeout(timeoutRefs.current.clear);
+
     // Simulate AI thinking
     setSuggestion("Thinking...");
     
@@ -41,7 +48,7 @@ export const useAISuggestion = () => {
       setSuggestion(`AI Co-pilot: ${msg}`);
       
       // Clear suggestion after 5 seconds
-      setTimeout(() => {
+      timeoutRefs.current.clear = setTimeout(() => {
         setSuggestion(null);
       }, 5000);
     }, 1000);

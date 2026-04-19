@@ -13,7 +13,7 @@ export interface NodeDefinition {
   component: ComponentType<any>;
   schema: z.ZodSchema<any>;
   propertiesComponent: ComponentType<any>;
-  defaultData: any;
+  defaultData: Record<string, unknown>;
 }
 
 export const NodeRegistry: Record<NodeType, NodeDefinition> = {
