@@ -1,5 +1,6 @@
 import { ComponentType } from 'react';
 import { z } from 'zod';
+import { NodeProps } from 'reactflow';
 import { StartNodeSchema, StartNodeData, StartNodeComponent, StartNodeProperties } from './StartNode';
 import { TaskNodeSchema, TaskNodeData, TaskNodeComponent, TaskNodeProperties } from './TaskNode';
 import { ApprovalNodeSchema, ApprovalNodeData, ApprovalNodeComponent, ApprovalNodeProperties } from './ApprovalNode';
@@ -8,12 +9,12 @@ import { EndNodeSchema, EndNodeData, EndNodeComponent, EndNodeProperties } from 
 
 export type NodeType = 'start' | 'task' | 'approval' | 'automated' | 'end';
 
-export interface NodeDefinition {
+export interface NodeDefinition<T = any> {
   type: NodeType;
-  component: ComponentType<any>;
-  schema: z.ZodSchema<any>;
+  component: ComponentType<NodeProps<T>>;
+  schema: z.ZodSchema<T>;
   propertiesComponent: ComponentType<any>;
-  defaultData: Record<string, unknown>;
+  defaultData: T;
 }
 
 export const NodeRegistry: Record<NodeType, NodeDefinition> = {

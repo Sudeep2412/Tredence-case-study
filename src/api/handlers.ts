@@ -46,17 +46,45 @@ export const handlers = [
       return HttpResponse.json({ error: 'No start node found' }, { status: 400 });
     }
 
-    let currentNodeId = startNode.id;
-    const visited = new Set<string>();
+    // Proper Cycle Detection using DFS recursion stack
+    const visiting = new Set<string>();
+    const fullyVisited = new Set<string>();
+    let hasCycle = false;
 
-    while (currentNodeId) {
-      if (visited.has(currentNodeId)) {
-        return HttpResponse.json({ error: 'Cycle detected' }, { status: 400 });
+    const checkCycle = (nodeId: string) => {
+      if (visiting.has(nodeId)) {
+        hasCycle = true;
+        return;
       }
-      visited.add(currentNodeId);
+      if (fullyVisited.has(nodeId)) return;
+
+      visiting.add(nodeId);
+      const outgoingEdges = edges.filter((e: any) => e.source === nodeId);
+      for (const edge of outgoingEdges) {
+        checkCycle(edge.target);
+      }
+      visiting.delete(nodeId);
+      fullyVisited.add(nodeId);
+    };
+
+    checkCycle(startNode.id);
+
+    if (hasCycle) {
+      return HttpResponse.json({ error: 'Cycle detected: Invalid workflow path' }, { status: 400 });
+    }
+
+    // BFS for building execution steps (handles merging paths/diamonds without false cycles)
+    let queue = [startNode.id];
+    const executed = new Set<string>();
+
+    while (queue.length > 0) {
+      const currentNodeId = queue.shift()!;
+      
+      if (executed.has(currentNodeId)) continue;
+      executed.add(currentNodeId);
 
       const node = nodes.find((n: any) => n.id === currentNodeId);
-      if (!node) break;
+      if (!node) continue;
 
       steps.push({
         nodeId: node.id,
@@ -64,9 +92,12 @@ export const handlers = [
         delay: 500, // 500ms delay per step for simulation
       });
 
-      // Find next node (simple path, first edge found)
-      const outgoingEdge = edges.find((e: any) => e.source === currentNodeId);
-      currentNodeId = outgoingEdge ? outgoingEdge.target : null;
+      const outgoingEdges = edges.filter((e: any) => e.source === currentNodeId);
+      for (const edge of outgoingEdges) {
+         if (!executed.has(edge.target) && !queue.includes(edge.target)) {
+             queue.push(edge.target);
+         }
+      }
     }
 
     // Return steps array

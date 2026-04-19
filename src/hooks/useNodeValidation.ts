@@ -1,21 +1,21 @@
 import { z } from 'zod';
 import { useWorkflowStore } from '../store/workflowStore';
+import { useShallow } from 'zustand/react/shallow';
 
-export const useNodeValidation = (nodeId: string, schema: z.ZodSchema<any>, data: any) => {
-  const edges = useWorkflowStore(state => state.edges);
+export const useNodeValidation = (nodeId: string, nodeType: string, schema: z.ZodSchema<any>, data: any) => {
+  const { hasIncoming, hasOutgoing } = useWorkflowStore(useShallow(state => ({
+    hasIncoming: state.edges.some(e => e.target === nodeId),
+    hasOutgoing: state.edges.some(e => e.source === nodeId)
+  })));
   
   const result = schema.safeParse(data);
   const dataErrors = !result.success ? result.error.issues : [];
   
-  // Validate edges (simple heuristic)
-  const incoming = edges.filter(e => e.target === nodeId);
-  const outgoing = edges.filter(e => e.source === nodeId);
-  
   const edgeErrors = [];
-  if (data.type !== 'start' && incoming.length === 0) {
+  if (nodeType !== 'start' && !hasIncoming) {
     edgeErrors.push('Missing incoming connection');
   }
-  if (data.type !== 'end' && outgoing.length === 0) {
+  if (nodeType !== 'end' && !hasOutgoing) {
     edgeErrors.push('Missing outgoing connection');
   }
 

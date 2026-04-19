@@ -19,8 +19,8 @@ export const EndNodeData = {
   type: 'end',
 };
 
-export const EndNodeComponent = memo(({ id, data, selected }: NodeProps) => {
-  const { isValid, errors } = useNodeValidation(id, EndNodeSchema, data);
+export const EndNodeComponent = memo(({ id, data, selected, type }: NodeProps) => {
+  const { isValid, errors } = useNodeValidation(id, type || 'end', EndNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
   return (

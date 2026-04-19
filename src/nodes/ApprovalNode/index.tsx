@@ -19,8 +19,8 @@ export const ApprovalNodeData = {
   type: 'approval',
 };
 
-export const ApprovalNodeComponent = memo(({ id, data, selected }: NodeProps) => {
-  const { isValid, errors } = useNodeValidation(id, ApprovalNodeSchema, data);
+export const ApprovalNodeComponent = memo(({ id, data, selected, type }: NodeProps) => {
+  const { isValid, errors } = useNodeValidation(id, type || 'approval', ApprovalNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
 
   return (

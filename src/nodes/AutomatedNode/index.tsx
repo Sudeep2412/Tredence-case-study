@@ -19,9 +19,13 @@ export const AutomatedNodeData = {
   type: 'automated',
 };
 
-export const AutomatedNodeComponent = memo(({ id, data, selected }: NodeProps) => {
-  const { isValid, errors } = useNodeValidation(id, AutomatedNodeSchema, data);
+export const AutomatedNodeComponent = memo(({ id, data, selected, type }: NodeProps) => {
+  const { isValid, errors } = useNodeValidation(id, type || 'automated', AutomatedNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
+
+  // Generate deterministic mock analytics based on ID
+  const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const reliability = (95 + (hash % 50) / 10).toFixed(1);
 
   return (
     <div className={`glass-panel w-[260px] ${selected ? 'border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.3)]' : ''} ${execClass}`}>
@@ -51,10 +55,10 @@ export const AutomatedNodeComponent = memo(({ id, data, selected }: NodeProps) =
         <div className="mt-4">
           <div className="flex justify-between text-[10px] text-white/40 mb-1">
             <span>Reliability Score</span>
-            <span className="text-orange-400">99.8%</span>
+            <span className="text-orange-400">{reliability}%</span>
           </div>
           <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-gradient-to-r from-orange-600 to-orange-400 h-1.5 rounded-full w-[99.8%]"></div>
+            <div className="bg-gradient-to-r from-orange-600 to-orange-400 h-1.5 rounded-full" style={{ width: `${reliability}%` }}></div>
           </div>
         </div>
       </div>

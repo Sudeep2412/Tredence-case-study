@@ -23,9 +23,14 @@ export const TaskNodeData = {
   type: 'task',
 };
 
-export const TaskNodeComponent = memo(({ id, data, selected }: NodeProps) => {
-  const { isValid, errors } = useNodeValidation(id, TaskNodeSchema, data);
+export const TaskNodeComponent = memo(({ id, data, selected, type }: NodeProps) => {
+  const { isValid, errors } = useNodeValidation(id, type || 'task', TaskNodeSchema, data);
   const execClass = data.isExecuting ? 'node-executing' : data.isSuccess ? 'node-success' : '';
+
+  // Generate deterministic mock analytics based on ID
+  const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const avgTime = ((hash % 48) / 10 + 0.5).toFixed(1);
+  const progressPercent = Math.min(100, (Number(avgTime) / 8) * 100);
 
   return (
     <div className={`glass-panel w-[260px] ${selected ? 'border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : ''} ${execClass}`}>
@@ -55,10 +60,10 @@ export const TaskNodeComponent = memo(({ id, data, selected }: NodeProps) => {
         <div className="mt-4">
           <div className="flex justify-between text-[10px] text-white/40 mb-1">
             <span>Historical Avg Time</span>
-            <span className="text-blue-400">2.4 hrs</span>
+            <span className="text-blue-400">{avgTime} hrs</span>
           </div>
           <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-1.5 rounded-full w-[65%]"></div>
+            <div className="bg-gradient-to-r from-blue-600 to-blue-400 h-1.5 rounded-full" style={{ width: `${progressPercent}%` }}></div>
           </div>
         </div>
       </div>

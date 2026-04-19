@@ -1,0 +1,202 @@
+{
+  "nodes": [
+    {
+      "id": "start-vp",
+      "type": "start",
+      "position": {
+        "x": 50,
+        "y": 300
+      },
+      "data": {
+        "label": "Initiate VP Onboarding",
+        "type": "start",
+        "metadata": "{\n  \"level\": \"Executive\",\n  \"region\": \"Global\",\n  \"priority\": \"High\"\n}"
+      }
+    },
+    {
+      "id": "auto-workday",
+      "type": "automated",
+      "position": {
+        "x": 350,
+        "y": 300
+      },
+      "data": {
+        "label": "Sync with Workday API",
+        "type": "automated",
+        "actionId": "generate_doc",
+        "params": {
+          "template": "vp_contract_sync",
+          "recipient": "hr_systems@tredence.com"
+        }
+      }
+    },
+    {
+      "id": "task-bg",
+      "type": "task",
+      "position": {
+        "x": 700,
+        "y": 100
+      },
+      "data": {
+        "label": "Deep Background Investigation",
+        "description": "Level 4 security clearance and extensive financial background check required for VP level and above. Must be completed before device handover.",
+        "type": "task",
+        "assignee": "SecurityOps",
+        "dueDate": "2024-06-01",
+        "customFields": "{\n  \"clearance_level\": 4,\n  \"vendor\": \"Checkr\"\n}"
+      }
+    },
+    {
+      "id": "task-it",
+      "type": "task",
+      "position": {
+        "x": 700,
+        "y": 500
+      },
+      "data": {
+        "label": "Executive Hardware Setup",
+        "description": "Procure and configure MacBook Pro M3 Max and secure mobile device with enterprise VPN profiles.",
+        "type": "task",
+        "assignee": "IT_Premium",
+        "dueDate": "2024-05-28"
+      }
+    },
+    {
+      "id": "approval-compliance",
+      "type": "approval",
+      "position": {
+        "x": 1100,
+        "y": 300
+      },
+      "data": {
+        "label": "Global Compliance Review",
+        "type": "approval",
+        "approverRole": "Director",
+        "autoApproveThreshold": 0
+      }
+    },
+    {
+      "id": "auto-card",
+      "type": "automated",
+      "position": {
+        "x": 1500,
+        "y": 150
+      },
+      "data": {
+        "label": "Issue Corporate Amex",
+        "type": "automated",
+        "actionId": "send_email",
+        "params": {
+          "to": "finance@tredence.com",
+          "subject": "Approve Corporate Card for New VP"
+        }
+      }
+    },
+    {
+      "id": "end-paused",
+      "type": "end",
+      "position": {
+        "x": 1500,
+        "y": 450
+      },
+      "data": {
+        "label": "Hold: Compliance Flag",
+        "type": "end"
+      }
+    },
+    {
+      "id": "task-board",
+      "type": "task",
+      "position": {
+        "x": 1850,
+        "y": 150
+      },
+      "data": {
+        "label": "Schedule Board Intro",
+        "description": "Coordinate with Executive Assistant to schedule a 15-min intro at the next quarterly board meeting.",
+        "type": "task",
+        "assignee": "ExecAdmin",
+        "dueDate": "2024-06-15"
+      }
+    },
+    {
+      "id": "end-success",
+      "type": "end",
+      "position": {
+        "x": 2200,
+        "y": 150
+      },
+      "data": {
+        "label": "VP Ready for Day 1",
+        "type": "end"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "start-vp",
+      "target": "auto-workday",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e2",
+      "source": "auto-workday",
+      "target": "task-bg",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e3",
+      "source": "auto-workday",
+      "target": "task-it",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e4",
+      "source": "task-bg",
+      "target": "approval-compliance",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e5",
+      "source": "task-it",
+      "target": "approval-compliance",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e6",
+      "source": "approval-compliance",
+      "target": "auto-card",
+      "sourceHandle": "approved",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e7",
+      "source": "approval-compliance",
+      "target": "end-paused",
+      "sourceHandle": "rejected",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e8",
+      "source": "auto-card",
+      "target": "task-board",
+      "type": "smoothstep",
+      "animated": true
+    },
+    {
+      "id": "e9",
+      "source": "task-board",
+      "target": "end-success",
+      "type": "smoothstep",
+      "animated": true
+    }
+  ]
+}
